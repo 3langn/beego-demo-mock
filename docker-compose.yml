@@ -1,0 +1,14 @@
+version: '3.4'
+
+services:
+  redis:
+    image: redis:6-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data/redis:/data
+    restart: always
+    environment:
+      - REDIS_PASSWORD=saota1278
+
