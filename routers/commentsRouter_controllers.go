@@ -115,6 +115,42 @@ func init() {
             Filters: nil,
             Params: nil})
 
+    beego.GlobalControllerRouter["mock/controllers:OrderController"] = append(beego.GlobalControllerRouter["mock/controllers:OrderController"],
+        beego.ControllerComments{
+            Method: "Get",
+            Router: "/",
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["mock/controllers:OrderController"] = append(beego.GlobalControllerRouter["mock/controllers:OrderController"],
+        beego.ControllerComments{
+            Method: "Post",
+            Router: "/",
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["mock/controllers:OrderController"] = append(beego.GlobalControllerRouter["mock/controllers:OrderController"],
+        beego.ControllerComments{
+            Method: "CancelOrder",
+            Router: "/cancel/:id",
+            AllowHTTPMethods: []string{"patch"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["mock/controllers:OrderController"] = append(beego.GlobalControllerRouter["mock/controllers:OrderController"],
+        beego.ControllerComments{
+            Method: "UpdateOrderStatus",
+            Router: "/update-status/:id",
+            AllowHTTPMethods: []string{"patch"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
     beego.GlobalControllerRouter["mock/controllers:UserController"] = append(beego.GlobalControllerRouter["mock/controllers:UserController"],
         beego.ControllerComments{
             Method: "GetAll",

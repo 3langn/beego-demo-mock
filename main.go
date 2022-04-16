@@ -16,6 +16,5 @@ func main() {
 	godotenv.Load(".env")
 	models.Init()
 	models.InitRedis(1)
-
 	beego.Run()
 }

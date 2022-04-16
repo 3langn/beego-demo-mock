@@ -14,7 +14,7 @@ type AuthController struct {
 	beego.Controller
 }
 
-// @Title Register
+// @Name Register
 // @Description Register users
 // @Param	body body models.LoginDto	true	"body for user content"
 // @Success 200 {int} body models.User
@@ -35,7 +35,7 @@ func (a *AuthController) Register() {
 	a.ServeJSON()
 }
 
-// @Title Login
+// @Name Login
 // @Description Logs user into the system
 // @Param	body body models.LoginDto	true	"body for user "
 // @Success 200 {int} body models.User

@@ -15,11 +15,13 @@ type User struct {
 	Role     string  ` json:"role"`
 	Basket   Basket  `json:"basket,omitempty"`
 	Address  string  `json:"address,omitempty"`
+	Balance  float64 `json:"balance"`
 }
 
 func (u *User) TableName() string {
 	return "users"
 }
+
 func (u *User) Create(username string, password string) error {
 	*u = User{
 		Username: username,
@@ -74,6 +76,13 @@ func (u *User) CheckPassword(password string) error {
 
 func (u *User) UpdateRole(role string) error {
 	if err := GetDB().Model(&u).Update("role", role).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func (u *User) UpdateBalance(balance float64) error {
+	if err := GetDB().Model(&u).Update("balance", balance).Error; err != nil {
 		return err
 	}
 	return nil

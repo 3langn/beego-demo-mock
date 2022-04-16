@@ -32,10 +32,10 @@ func (c *BasketController) AddFood() {
 	user_id := c.Ctx.Input.GetData("user_id").(string)
 
 	b := models.Basket{}
-	var foodId = map[string]string{}
-	json.Unmarshal(c.Ctx.Input.RequestBody, &foodId)
+	var request = models.BasketItemRequest{}
+	json.Unmarshal(c.Ctx.Input.RequestBody, &request)
 
-	err := b.AddFood(user_id, foodId["food_id"])
+	err := b.UpdateBasketItem(user_id, request.FoodID, request.Quantity)
 	if err != nil {
 		helpers.NewHttpException(&c.Controller, "Error getting basket", err, http.StatusInternalServerError)
 	}

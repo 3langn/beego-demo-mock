@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	uuid "github.com/satori/go.uuid"
 	"gorm.io/gorm"
 )
@@ -14,40 +15,59 @@ type Basket struct {
 //TODO: Check relationship
 type BasketItem struct {
 	Base
-	FoodID   uuid.UUID `json:"-"`
-	Food     *Food     `json:"food" gorm:"foreignkey:FoodID"`
-	Count    int       `json:"count"`
-	BasketID uuid.UUID `json:"-"`
+	FoodID   uuid.UUID  `json:"-"`
+	Food     *Food      `json:"food" gorm:"foreignkey:FoodID"`
+	Quantity int        `json:"count"`
+	BasketID *uuid.UUID `json:"-"`
+	OrderID  *uuid.UUID `json:"-"`
+	Status   string     `json:"status"`
 }
 
 type BasketResponse struct {
-	Basket Basket                `json:"basket"`
-	Items  []*BasketItemResponse `json:"items"`
+	Basket Basket  `json:"basket,omitempty"`
+	Total  float64 `json:"total"`
 }
 
-type BasketItemResponse struct {
-	Food  Food `json:"food"`
-	Count int  `json:"count"`
+type BasketItemRequest struct {
+	FoodID   string `json:"food_id"`
+	Quantity int    `json:"quantity"`
 }
 
-func (b *Basket) GetBasket(user_id string) (basket Basket, err error) {
+// Util functions
+func CalculateTotal(items []BasketItem) (total float64) {
+	for _, item := range items {
+		total += item.Food.Price * float64(item.Quantity)
+	}
+	return
+}
+
+func (b *Basket) GetBasket(user_id string) (*BasketResponse, error) {
 	//TODO: Group by food name, count
-
-	err = db.Debug().
+	var basket Basket
+	err := db.Debug().
 		Model(&Basket{}).
 		Where("user_id = ?", user_id).
 		Preload("BasketItems").
 		Preload("BasketItems.Food").
-		Find(&basket).Error
+		First(&basket).Error
 
-	return basket, nil
+	if err != nil {
+		return nil, err
+	}
+
+	total := CalculateTotal(basket.BasketItems)
+
+	return &BasketResponse{
+		Basket: basket,
+		Total:  total,
+	}, nil
 }
 
-func (b *Basket) AddFood(user_id string, food_id string) (err error) {
+func (b *Basket) UpdateBasketItem(user_id string, food_id string, quantity int) (err error) {
 	var food Food
 	err = db.First(&food, "id = ?", food_id).Error
-	if err != nil {
-		return err
+	if err == gorm.ErrRecordNotFound {
+		return errors.New("Food not found")
 	}
 
 	var basket Basket
@@ -55,33 +75,34 @@ func (b *Basket) AddFood(user_id string, food_id string) (err error) {
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			var basket_items []BasketItem
-			basket_items = append(basket_items, BasketItem{FoodID: food.ID, Count: 1})
+			basket_items = append(basket_items, BasketItem{FoodID: food.ID, Quantity: quantity})
 			basket = Basket{
 				UserID:      uuid.FromStringOrNil(user_id),
 				BasketItems: basket_items,
 			}
-			db.Debug().Omit("UserID.*").Create(&basket)
+			err = db.Debug().Omit("UserID.*").Create(&basket).Error
+			if err != nil {
+				return err
+			}
 			return nil
 		}
 		return err
 	}
 
 	var basket_item BasketItem
-	// If basket item exists, increase count or create new basket item
 	err = db.Debug().
 		Where("basket_id = ? AND food_id = ?", basket.ID, food.ID).
 		First(&basket_item).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
-			basket_item = BasketItem{FoodID: food.ID, Count: 1, BasketID: basket.ID}
+			basket_item = BasketItem{FoodID: food.ID, Quantity: quantity, BasketID: &basket.ID}
 			db.Debug().Omit("UserID.*").Omit("Food.*").Create(&basket_item)
 			return nil
 		}
 		return err
 	}
 
-	// Increase count
-	basket_item.Count++
+	basket_item.Quantity = quantity
 	db.Debug().Omit("UserID.*").Omit("Food.*").Save(&basket_item)
 
 	return nil

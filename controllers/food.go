@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"errors"
 	beego "github.com/beego/beego/v2/server/web"
 	"gorm.io/gorm"
 	"mock/helpers"
@@ -17,7 +18,8 @@ type FoodController struct {
 // @router / [get]
 func (c *FoodController) GetAll() {
 	var food models.Food
-	foods, _ := food.FindAll()
+	category := c.GetString("category")
+	foods, _ := food.FindAll(category)
 
 	c.Data["json"] = models.ResponseDto{
 		Message: "success",
@@ -48,6 +50,13 @@ func (c *FoodController) Create() {
 	var foodModel models.Food
 
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &dto)
+
+	if len(dto.CategoriesId) == 0 {
+		err := errors.New(utils.InvalidInputParam)
+		helpers.NewHttpException(&c.Controller, "category is required", err, http.StatusBadRequest)
+		return
+	}
+
 	if err != nil {
 		helpers.NewHttpException(&c.Controller, utils.InvalidRequestError, err, http.StatusBadRequest)
 		return

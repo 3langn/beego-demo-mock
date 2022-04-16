@@ -6,7 +6,7 @@ type CategoryDto struct {
 
 type Category struct {
 	Base
-	Title string  `json:"title"`
+	Name  string  `json:"name"`
 	Foods []*Food `json:"foods" gorm:"many2many:food_categories"`
 }
 
@@ -18,7 +18,7 @@ func (c *Category) Create(dto []*Category) ([]*Category, error) {
 	var categories []*Category
 	for _, v := range dto {
 		categories = append(categories, &Category{
-			Title: v.Title,
+			Name: v.Name,
 		})
 	}
 

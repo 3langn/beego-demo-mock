@@ -52,3 +52,10 @@ var ProtectUrl = []UrlMapping{
 		Role:   "admin",
 	},
 }
+
+const (
+	OrderStatusPending    = "Chờ xử lý"
+	OrderStatusCancelled  = "Đã hủy"
+	OrderStatusDelivering = "Đang giao"
+	OrderStatusComplete   = "Đã Giao"
+)

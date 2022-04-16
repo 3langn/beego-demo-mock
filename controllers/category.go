@@ -16,7 +16,7 @@ type CategoryController struct {
 }
 
 //// CRUD
-//// @Title Create
+//// @Name Create
 //// @Description create category
 //// @Param	body		body 	models.Category	true		"body for category content"
 //// @Success 200 {int} models.Category.Id
@@ -40,7 +40,7 @@ func (c *CategoryController) Create() {
 	c.ServeJSON()
 }
 
-// @Title Get
+// @Name Get
 // @Description get category by id
 // @Param	id		path 	string	true		"The key for staticblock"
 // @Success 200 {object} models.Category
@@ -67,7 +67,7 @@ func (c *CategoryController) Get() {
 	c.ServeJSON()
 }
 
-// @Title GetAll
+// @Name GetAll
 // @Description get category
 // @Param	order	query	string	false	"Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ..."
 // @Param	limit	query	string	false	"Limit the size of result set. Must be an integer"

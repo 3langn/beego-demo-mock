@@ -12,7 +12,7 @@ type UserController struct {
 	beego.Controller
 }
 
-// @Title Get all users
+// @Name Get all users
 // @Description Get all users
 // @Success 200 {int} body []*models.User
 // @Failure 403 body is empty
