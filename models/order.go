@@ -32,7 +32,6 @@ func (o *Order) GetOrder(user_id string) (Order, error) {
 	return order, err
 }
 
-// TODO: Check model Order with basket items
 func (o *Order) CreateOrder(basketItemId string) error {
 	err := db.Transaction(func(tx *gorm.DB) error {
 		basketItem := BasketItem{}

@@ -4,6 +4,12 @@ const Prefix = "/v1"
 
 // Response
 
+const (
+	AdminRole   = "admin"
+	UserRole    = "user"
+	ShipperRole = "shipper"
+)
+
 type UrlMapping struct {
 	Url    string
 	Method string
@@ -58,4 +64,10 @@ const (
 	OrderStatusCancelled  = "Đã hủy"
 	OrderStatusDelivering = "Đang giao"
 	OrderStatusComplete   = "Đã Giao"
+)
+
+const (
+	REDIS_HOST      = "localhost"
+	REDIS_PORT      = "6379"
+	TOKEN_REDIS_KEY = "token:"
 )

@@ -6,7 +6,6 @@ import (
 	"github.com/beego/beego/v2/server/web/context"
 	"github.com/dgrijalva/jwt-go"
 	"mock/helpers"
-	"mock/models"
 	"mock/utils"
 	"net/http"
 	"strings"
@@ -57,27 +56,27 @@ func JwtFilter(ctx *context.Context) {
 		ctx.Input.SetData("user_id", claims["user_id"].(string))
 		ctx.Input.SetData("role", claims["role"].(string))
 
-		userId := claims["user_id"].(string)
+		//userId := claims["user_id"].(string)
 
-		tokens, _ := helpers.Lrange(utils.TOKEN_REDIS_KEY+userId, 0, -1)
-
-		var tkClaim models.TokenTable
-		if len(tokens) < 1 {
-			ctx.Output.SetStatus(http.StatusUnauthorized)
-			resBody, _ := json.Marshal(helpers.HttpException{Error: "", Message: utils.HeaderTokenError})
-			ctx.Output.Body(resBody)
-		}
-
-		for _, tk := range tokens {
-			if tk == tokenString {
-				json.Unmarshal([]byte(tk), &tkClaim)
-				if !tkClaim.IsValid {
-					ctx.Output.SetStatus(http.StatusUnauthorized)
-					resBody, _ := json.Marshal(helpers.HttpException{Error: "", Message: utils.HeaderTokenError})
-					ctx.Output.Body(resBody)
-				}
-			}
-		}
+		//tokens, _ := helpers.Lrange(utils.TOKEN_REDIS_KEY+userId, 0, -1)
+		//
+		//var tkClaim models.TokenTable
+		//if len(tokens) < 1 {
+		//	ctx.Output.SetStatus(http.StatusUnauthorized)
+		//	resBody, _ := json.Marshal(helpers.HttpException{Error: "", Message: utils.HeaderTokenError})
+		//	ctx.Output.Body(resBody)
+		//}
+		//
+		//for _, tk := range tokens {
+		//	if tk == tokenString {
+		//		json.Unmarshal([]byte(tk), &tkClaim)
+		//		if !tkClaim.IsValid {
+		//			ctx.Output.SetStatus(http.StatusUnauthorized)
+		//			resBody, _ := json.Marshal(helpers.HttpException{Error: "", Message: utils.HeaderTokenError})
+		//			ctx.Output.Body(resBody)
+		//		}
+		//	}
+		//}
 	} else {
 		ctx.Output.SetStatus(http.StatusUnauthorized)
 		resBody, err := json.Marshal(helpers.HttpException{Error: utils.InvalidTokenError, Message: utils.InvalidTokenError})

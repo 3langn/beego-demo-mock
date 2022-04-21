@@ -21,4 +21,19 @@ func RoleFilter(ctx *context.Context) {
 			ctx.Output.Body([]byte("{\"code\":403,\"message\":\"Forbidden\"}"))
 		}
 	}
+
+	if strings.HasPrefix(ctx.Input.URL(), "/v1/order/update-status") && ctx.Request.Method == http.MethodPatch {
+		status := ctx.Input.Query("status")
+		if status == utils.OrderStatusDelivering && role != utils.AdminRole {
+			ctx.Output.SetStatus(http.StatusForbidden)
+			ctx.Output.Body([]byte("{\"code\":403,\"message\":\"Bạn không phải là admin\"}"))
+		}
+
+		if status == utils.OrderStatusCancelled || status == utils.OrderStatusComplete && role != utils.UserRole {
+			ctx.Output.SetStatus(http.StatusForbidden)
+			ctx.Output.Body([]byte("{\"code\":403,\"message\":\"Bạn không phải là user\"}"))
+		}
+
+		return
+	}
 }

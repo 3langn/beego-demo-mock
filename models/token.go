@@ -1,12 +1,9 @@
 package models
 
 import (
-	"encoding/json"
 	"github.com/dgrijalva/jwt-go"
 	uuid "github.com/satori/go.uuid"
 	"gorm.io/gorm"
-	"mock/helpers"
-	"mock/utils"
 	"time"
 )
 
@@ -80,9 +77,9 @@ func (t *Token) GenerateAuthToken(UserID uuid.UUID) (*AuthToken, error) {
 	tk.UpdatedAt = time.Now()
 	tk.IsValid = true
 
-	ss, _ := json.Marshal(tk)
+	//ss, _ := json.Marshal(tk)
 
-	helpers.Lpush(utils.TOKEN_REDIS_KEY+UserID.String(), string(ss))
+	//helpers.Lpush(utils.TOKEN_REDIS_KEY+UserID.String(), string(ss))
 
 	refreshToken, err := t.GenerateToken(UserID, RefreshTokenType)
 	if err != nil {

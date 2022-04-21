@@ -7,6 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// TODO:Stripe
 type User struct {
 	Base
 	Username string  ` json:"username"`
